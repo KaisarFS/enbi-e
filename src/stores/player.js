@@ -301,9 +301,9 @@ export const usePlayerStore = defineStore('player', {
         const teams = await nbaApi.nba.getTeams();
         this.teams = teams.data;
       } catch (error) {
-        if (error.response.data.message !== 'Invalid  token') {
-          toast.error(error.response.data.message);
-        }
+        // if (error.response.data.message !== 'Invalid  token') {
+        //   toast.error(error.response.data.message);
+        // }
         console.error(error, "<=== error fetchTeams()");
       }
     }
