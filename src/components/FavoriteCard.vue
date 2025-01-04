@@ -14,7 +14,7 @@ export default {
 
 <template>
     <!-- <pre>{{ follow }}</pre> -->
-     <div class="col-6 mt-5" @click="this.fetchOnePlayer(follow.Player.id)" style="cursor: pointer;">
+     <div class="col-4" @click="this.fetchOnePlayer(follow.Player.id)" style="cursor: pointer;">
         <div class="class-item d-flex align-items-center">
             <a @click="this.fetchOnePlayer(follow.Player.id)" class="class-item-thumbnail" style="cursor: pointer;">
                 <img :src="follow.Player.imgUrl" alt="Free website template by Free-Template.co">
