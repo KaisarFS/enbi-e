@@ -51,7 +51,7 @@ export default {
                             <li><a @click.prevent="$router.push('/users/' + userProfile.username + '/following')"
                                     class="nav-link">Following</a></li>
                             <li><a @click.prevent="$router.push('/users/' + userProfile.username)" class="nav-link"
-                                    style="cursor: pointer;">My Profile</a></li>
+                                    style="cursor: pointer;">My Profilex</a></li>
                             <li>
                                 <!-- <RouterLink to="/login" class="nav-link">Login</RouterLink> -->
                                 <a href="" @click.prevent="whatStatus" style="color: white; text-decoration: none;">
