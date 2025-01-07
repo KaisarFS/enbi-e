@@ -4,8 +4,8 @@ import { useToast } from "vue-toastification";
 import { BalldontlieAPI } from "@balldontlie/sdk";
 
 const nbaApi = new BalldontlieAPI({ apiKey: "4a4f84b5-29fc-4ca7-ac11-df8580f6f8da" });
-const baseUrl = 'http://localhost:3000'
-// const baseUrl = 'https://enbie-production.up.railway.app'
+// const baseUrl = 'http://localhost:3000'
+const baseUrl = 'https://enbie-server-production.up.railway.app'
 
 const toast = useToast();
 
@@ -17,6 +17,7 @@ export const usePlayerStore = defineStore('player', {
     userProfile: {},
     isPro: false,
     teams: [],
+    loading: false,
   }),
   actions: {
     logout() {
@@ -36,14 +37,12 @@ export const usePlayerStore = defineStore('player', {
           data: formLogin
         })
 
-        // console.log(data, '<----- data login');
         localStorage.setItem('access_token', data.access_token)
         localStorage.setItem('username', data.username)
         toast.success("You're in mate");
 
         this.router.push('/')
       } catch (error) {
-        // console.log(error, '<---- error login');
         toast.error(error.response.data.message);
       }
     },
@@ -64,7 +63,6 @@ export const usePlayerStore = defineStore('player', {
         this.router.push('/')
       } catch (error) {
         toast.error(error.response.data.message);
-        // console.log(error, '<<---- google login');
         // const msg = error.response.data.message
         // Swal.fire({
         //     icon: 'error',
@@ -75,8 +73,6 @@ export const usePlayerStore = defineStore('player', {
     },
 
     async register(formRegister) {
-      console.log('masukkkk register');
-      console.log(formRegister, '<---- formREGISTER');
       try {
         const multerData = new FormData();
         multerData.append("imgProfile", formRegister.imgProfile);
@@ -95,7 +91,6 @@ export const usePlayerStore = defineStore('player', {
         this.router.push('/login');
 
       } catch (error) {
-        // console.log(error, '<----- error register');
         toast.error(error.response.data.message);
       }
     },
@@ -108,11 +103,8 @@ export const usePlayerStore = defineStore('player', {
           headers: { access_token: localStorage.access_token }
         })
 
-        // toast.success("You're in mate");
-
         this.players = data
       } catch (error) {
-        // console.log(error, '<---- error fetchPlayers');
         if (error.response.data.message !== 'Invalid token') {
           toast.error(error.response.data.message);
 
@@ -121,7 +113,6 @@ export const usePlayerStore = defineStore('player', {
     },
 
     async fetchOnePlayer(id) {
-      console.log(id, '<----- id fetchOnePlayer');
       try {
         const { data } = await axios({
           url: `${baseUrl}/players/${id}`,
@@ -129,14 +120,9 @@ export const usePlayerStore = defineStore('player', {
           headers: { access_token: localStorage.access_token }
         })
 
-        console.log(data, '<---- data fetchOnePlayer');
-
         this.onePlayer = data
         this.router.push(`/players/${id}`)
       } catch (error) {
-        // console.log(error, '<---- error fetchOnePlayer');
-
-        // toast.error(error.response.data.message);
         if (error.response.data.message !== 'Invalid token') {
           toast.error(error.response.data.message);
 
@@ -154,12 +140,9 @@ export const usePlayerStore = defineStore('player', {
         })
 
         toast.success("You followed this player");
-        // console.log(data, '<------- data addFavorite');
         this.router.push('/users/user/following')
       } catch (error) {
-        // console.log(error, '<---- error addFavorite');
 
-        // toast.error(error.response.data.message);
         if (error.response.data.message !== 'Invalid token') {
           toast.error(error.response.data.message);
 
@@ -176,14 +159,12 @@ export const usePlayerStore = defineStore('player', {
           headers: { access_token: localStorage.access_token }
         })
 
-        // console.log(data, '<----- data changeStausPro');
         toast.success("You are a pro member now!");
 
 
         this.fetchUserProfile()
         this.router.push('/users/asd')
       } catch (error) {
-        // console.log(error, '<---- error di changeStatus');
         toast.error(error.response.data.message);
       }
     },
@@ -217,18 +198,14 @@ export const usePlayerStore = defineStore('player', {
           },
         })
 
-        console.log(data, '<---- data midtrans');
         const cb = this.changeStatusPro;
 
         window.snap.pay(data.token, {
           onSuccess: function (result) {
-            // toast.success("Payment Success");
-            console.log('SUKSESSS BAYAR!!!');
             cb();
           },
         });
       } catch (error) {
-        // console.log(error, '<---- error upgrade Member');
         toast.error(error.response.data.message);
       }
     },
@@ -242,12 +219,9 @@ export const usePlayerStore = defineStore('player', {
           headers: { access_token: localStorage.access_token }
         })
 
-        // console.log(data, '<----- data fetchFollowing');
         this.following = data
       } catch (error) {
-        // console.log(error, '<---- error fetch following');
 
-        // toast.error(error.response.data.message);
         if (error.response.data.message !== 'Invalid token') {
           toast.error(error.response.data.message);
 
@@ -256,7 +230,6 @@ export const usePlayerStore = defineStore('player', {
     },
 
     async fetchUserProfile(username) {
-      // console.log(username, '<----- usrname   ');
       try {
         const { data } = await axios({
           url: `${baseUrl}/users/${username}`,
@@ -264,12 +237,8 @@ export const usePlayerStore = defineStore('player', {
           headers: { access_token: localStorage.access_token }
         })
 
-        // console.log(data, '<---- data fetchUserProfie');
         this.userProfile = data
       } catch (error) {
-        // console.log(error, '<---- error fetchUserProfile');
-
-        // toast.error(error.response.data.message);
         if (error.response.data.message !== 'Invalid token') {
           toast.error(error.response.data.message);
 
@@ -298,13 +267,16 @@ export const usePlayerStore = defineStore('player', {
 
     async fetchTeams() {
       try {
+        this.loading = true;
         const teams = await nbaApi.nba.getTeams();
         this.teams = teams.data;
       } catch (error) {
-        if (error.response.data.message !== 'Invalid  token') {
-          toast.error(error.response.data.message);
-        }
+        // if (error.response.data.message !== 'Invalid  token') {
+        //   toast.error(error.response.data.message);
+        // }
         console.error(error, "<=== error fetchTeams()");
+      } finally {
+        this.loading = false;
       }
     }
   },

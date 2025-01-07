@@ -21,7 +21,7 @@ export default {
 
 <template>
     <NavbarTwo />
-    
+
     <div class="site-section" id="classes-section">
         <div class="container mt-5">
             <div class="row justify-content-center text-center mb-5">
@@ -30,9 +30,11 @@ export default {
                 </div>
             </div>
             <!-- Card -->
-            <FavoriteCard v-for="follow in following" :key="follow.id" :follow="follow" />
-            
-            
+            <div class="row">
+                <FavoriteCard v-for="follow in following" :key="follow.id" :follow="follow" />
+            </div>
+
+
         </div>
     </div>
 
