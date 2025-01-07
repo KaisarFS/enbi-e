@@ -4,8 +4,8 @@ import { useToast } from "vue-toastification";
 import { BalldontlieAPI } from "@balldontlie/sdk";
 
 const nbaApi = new BalldontlieAPI({ apiKey: "4a4f84b5-29fc-4ca7-ac11-df8580f6f8da" });
-const baseUrl = 'http://localhost:3000'
-// const baseUrl = 'https://enbie-production.up.railway.app'
+// const baseUrl = 'http://localhost:3000'
+const baseUrl = 'https://enbie-server-production.up.railway.app'
 
 const toast = useToast();
 
