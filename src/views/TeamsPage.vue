@@ -1,31 +1,7 @@
 <!-- eslint-disable vue/no-unused-components -->
 <!-- eslint-disable prettier/prettier -->
-<script>
-import { mapActions, mapState } from 'pinia';
-import Navbar from '../components/Navbar.vue';
-import NavbarTwo from '../components/NavbarTwo.vue';
-import TableTeam from '../components/TableTeam.vue';
-import { usePlayerStore } from '../stores/player';
-
-
-export default {
-    name: "TeamsPage",
-    components: { TableTeam, Navbar, NavbarTwo },
-    methods: {
-        ...mapActions(usePlayerStore, ['fetchTeams'])
-    },
-    computed: {
-        ...mapState(usePlayerStore, ['teams'])
-    },
-
-    created() {
-        this.fetchTeams()
-    }
-}
-</script>
 
 <template>
-  <!-- <Navbar /> -->
   <NavbarTwo />
 
   <section class="container">
@@ -43,20 +19,102 @@ export default {
       </div>
     </div>
 
-    <table class="table">
-      <thead class="table-dark">
-        <tr>
-          <th scope="col">No</th>
-          <th scope="col">Team</th>
-          <th scope="col">Abbreviation</th>
-          <th scope="col">City</th>
-          <th scope="col">Conference</th>
-          <th scope="col">Division</th>
-        </tr>
-      </thead>
-      <tbody>
-        <TableTeam v-for="team in teams" :key="team.id" :team="team" />
-      </tbody>
-    </table>
+    <div v-if="loading" class="d-flex justify-content-center">
+      <div class="custom-loader"></div>
+    </div>
+
+    <div v-else>
+
+      <table class="table mb-5">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">No</th>
+            <th scope="col">Team</th>
+            <th scope="col">Abbreviation</th>
+            <th scope="col">City</th>
+            <th scope="col">Conference</th>
+            <th scope="col">Division</th>
+          </tr>
+        </thead>
+        <tbody>
+          <TableTeam v-for="(team, index) in paginatedTeams" :key="team.id" :team="team" :index="index" />
+
+        </tbody>
+      </table>
+      <Paginator :rows="rowsPerPage" :totalRecords="totalTeams" :first="first" @page="onPageChange" />
+    </div>
+
   </section>
 </template>
+
+<!-- <script>
+
+import { mapActions, mapState } from 'pinia';
+import { usePlayerStore } from '../stores/player';
+import Navbar from '../components/Navbar.vue';
+import NavbarTwo from '../components/NavbarTwo.vue';
+import TableTeam from '../components/TableTeam.vue';
+import Paginator from 'primevue/paginator';
+
+
+export default {
+  name: "TeamsPage",
+  components: { TableTeam, Navbar, NavbarTwo },
+  methods: {
+    ...mapActions(usePlayerStore, ['fetchTeams'])
+  },
+  computed: {
+    ...mapState(usePlayerStore, ['teams', 'loading'])
+  },
+
+  created() {
+    this.fetchTeams()
+  }
+}
+</script> -->
+
+<script>
+import { ref, computed, onMounted } from 'vue';
+import { usePlayerStore } from '../stores/player';
+import NavbarTwo from '../components/NavbarTwo.vue';
+import TableTeam from '../components/TableTeam.vue';
+import Paginator from 'primevue/paginator';
+import Button from "primevue/button"
+
+export default {
+  name: 'TeamsPage',
+  components: { NavbarTwo, TableTeam, Paginator },
+  setup() {
+    const store = usePlayerStore();
+    const rowsPerPage = ref(10); // Number of teams per page
+    const first = ref(0); // Current start index of the page
+
+    const loading = computed(() => store.loading);
+    const teams = computed(() => store.teams);
+    const totalTeams = computed(() => teams.value.length);
+
+    const paginatedTeams = computed(() => {
+      const start = first.value;
+      const end = start + rowsPerPage.value;
+      return teams.value.slice(start, end);
+    });
+
+    const onPageChange = (event) => {
+      first.value = event.first;
+    };
+
+    onMounted(() => {
+      store.fetchTeams();
+    });
+
+    return {
+      loading,
+      paginatedTeams,
+      rowsPerPage,
+      totalTeams,
+      first,
+      onPageChange
+    };
+  }
+};
+</script>

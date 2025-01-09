@@ -10,7 +10,6 @@ export default {
             const credential = response.credential;
             this.loginGoogle(credential);
             // this.$emit("loginGoogle", credential);
-            // console.log(response.credential)
         },
     },
     data() {

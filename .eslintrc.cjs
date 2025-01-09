@@ -10,6 +10,7 @@ module.exports = {
   // ],
   'extends': [],
   parserOptions: {
-    ecmaVersion: 'latest'
+    ecmaVersion: 'latest',
+    sourceType: "module",
   }
 }

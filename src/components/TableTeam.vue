@@ -5,10 +5,6 @@
 export default {
   name: "Table Team",
   props: ["team"],
-
-  created() {
-    console.log(this.team, "<=== this team");
-  }
 };
 </script>
 

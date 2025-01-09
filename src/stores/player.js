@@ -54,11 +54,8 @@ export const usePlayerStore = defineStore('player', {
           url: baseUrl + '/users/google-login',
           headers: { google_token: response }
         })
-        console.log(data, '<--- data google login');
         localStorage.setItem('access_token', data.access_token)
-
         toast.success("You're in mate");
-
 
         this.router.push('/')
       } catch (error) {
@@ -131,7 +128,6 @@ export const usePlayerStore = defineStore('player', {
     },
 
     async addFavorite(playerId) {
-      console.log(playerId, '<---- playerId addFavorite');
       try {
         const { data } = await axios({
           url: `${baseUrl}/users/${playerId}`,
@@ -211,7 +207,6 @@ export const usePlayerStore = defineStore('player', {
     },
 
     async fetchFollowing(username) {
-      console.log(username, '<---- username');
       try {
         const { data } = await axios({
           url: `${baseUrl}/users/following`,
@@ -246,25 +241,6 @@ export const usePlayerStore = defineStore('player', {
       }
     },
 
-    // async fetchTeams() {
-    //   try {
-    //     const { data } = await axios({
-    //       url: `https://www.balldontlie.io/api/v1/teams`,
-    //       method: 'get',
-    //     })
-
-    //     console.log(data, '<----');
-    //     this.teams = data
-    //   } catch (error) {
-    //     // console.log(error, '<---- error fetchTeams');
-    //     // toast.error(error.response.data.message);
-    //     if (error.response.data.message !== 'Invalid token') {
-    //       toast.error(error.response.data.message);
-
-    //     }
-    //   }
-    // }
-
     async fetchTeams() {
       try {
         this.loading = true;
@@ -274,7 +250,7 @@ export const usePlayerStore = defineStore('player', {
         // if (error.response.data.message !== 'Invalid  token') {
         //   toast.error(error.response.data.message);
         // }
-        console.error(error, "<=== error fetchTeams()");
+        console.error(error);
       } finally {
         this.loading = false;
       }
